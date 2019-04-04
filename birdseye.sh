@@ -28,7 +28,7 @@ esac
 case $1 in
  -[v] | --version)
     cat <<-versionDoc
-    birdseye version: 1.0.0
+    birdseye version: 1.1.0
 	versionDoc
         exit 0;;
 esac
@@ -61,6 +61,17 @@ function getRemoteOrigin {
     local remote=$(git config --get remote.origin.url)
 
     local result="$remote"
+    echo "$result"
+}
+
+function getHeadSummary {
+    local head=$(git rev-parse --short HEAD)
+    local dateTime=$(git show -s --format=%ci "$head")
+    local date=$(echo $dateTime | cut -d ' ' -f 1)
+    local time=$(echo $dateTime | cut -d ' ' -f 2)
+    local author=$(git show -s --pretty=%an "$head")
+    
+    local result="The last commit, $head, was by $author on $date at $time"
     echo "$result"
 }
 
@@ -113,8 +124,9 @@ function renderHeader {
     local project="$(tput setaf 7)Your $(tput setaf 3)$2 $(tput setaf 7)project is looking great!"
     local branch="$(tput setaf 7)You're at $(tput setaf 3)$3 $(tput setaf 7)"
     local origin="$(tput setaf 7)The remote is $(tput setaf 3)$4 $(tput setaf 7)"
+    local head="$(tput setaf 3)$5 $(tput setaf 7)"
     
-    local result="\n$user \n$project \n$branch \n$origin \n\n"
+    local result="\n$user \n$project \n$branch \n$origin \n$head \n\n"
     printf "$result" 
 }
 
@@ -123,8 +135,9 @@ function execute {
     local project=$(basename $PWD)
     local head=$(getHead)
     local origin=$(getRemoteOrigin)
+    local latest=$(getHeadSummary)
 
-    renderHeader "$user" "$project" "$head" "$origin" 
+    renderHeader "$user" "$project" "$head" "$origin" "$latest"
     renderLogs
 } 
 
