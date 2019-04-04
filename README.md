@@ -12,4 +12,4 @@ Sometimes it's a pain to have to run a multitude of git commands before working 
 - `birdseye.sh [ -v | --version ]`: display the current version
 
 ## Contributing
-Check out []().
+Check out [the contribution guidelines](https://github.com/cognophile/birdseye/blob/master/CONTRIBUTING.md).
